@@ -1,0 +1,436 @@
+#:kivy 1.1.0
+#:import os os
+#:import cv2 cv2
+
+Root:
+    canvas.before:
+        Color:
+            rgba: 0.30,0.30,0.30,1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    padding: 5
+    orientation: "horizontal"
+    BoxLayout:
+        id: buttonsBox
+        size_hint: (.2, 1)
+        orientation: "vertical"
+        Button:
+            text: "Load Image"
+            on_release: root.show_load()
+        Button:
+            text: root.widgetsBarList[0]
+            on_release: root.show_action_bar(root.widgetsBarList[0])
+        Button:
+            text: root.widgetsBarList[1]
+            on_release: root.show_action_bar(root.widgetsBarList[1])
+        Button:
+            text: root.widgetsBarList[2]
+            on_release: root.show_action_bar(root.widgetsBarList[2])
+        Button:
+            text: root.widgetsBarList[3]
+            on_release: root.show_action_bar(root.widgetsBarList[3])
+        Button:
+            text: root.widgetsBarList[4]
+            on_release: root.show_action_bar(root.widgetsBarList[4])
+        Button:
+            text: root.widgetsBarList[5]
+            on_release: root.show_action_bar(root.widgetsBarList[5])
+        Button:
+            text: root.widgetsBarList[6]
+            on_release: root.show_action_bar(root.widgetsBarList[6])     
+    BoxLayout:
+        size_hint: (.8, 1)
+        orientation: "vertical"
+        BoxLayout:
+            id: actionBar
+            size_hint: (1, .4)
+        BoxLayout:
+            id: imgBox
+            size_hint: (1, .55)
+            orientation: "horizontal"
+            Image:
+                size_hint: (.7,1)
+                id: mainImg
+        Label:
+            id: actionsLabel
+            size_hint: (1, .05)
+            text_size: self.size
+            halign: 'left'
+            valign: 'bottom'
+            text: 'Actions Done: '
+<ColorSpaceBar>:
+    BoxLayout:
+        orientation: "horizontal"
+        pos_hint: {'x': 0.0, 'y': 0.7}
+        Label:
+            size_hint: (0.2,0.3)
+            text: " From "
+        Spinner:
+            id: colorFromSpinner
+            size_hint: (0.3,0.3)
+            text: 'Select'
+            values: root.ah.tf.colorCodes
+        Label:
+            size_hint: (0.2,0.3)
+            text: " To "
+        Spinner:
+            id: colorToSpinner
+            size_hint: (0.3,0.3)
+            text: 'Select'
+            values: root.ah.tf.colorCodes
+            on_text: root.ah.change_color_space(colorFromSpinner.text+'2'+self.text)
+<ThreasholdingBar>:
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (1, 0.3)
+            Spinner:
+                id: threshTypeSpinner
+                size_hint: (0.15,1)
+                text: root.ah.tf.thresholdTypes[0]
+                values: root.ah.tf.thresholdTypes
+            Spinner:
+                id: adapFucSpinner
+                size_hint: (0.4,1)
+                text: root.ah.tf.adaptiveThresholdMethods.keys()[0]
+                values: root.ah.tf.adaptiveThresholdMethods.keys()
+                disabled: threshTypeSpinner.text == root.ah.tf.thresholdTypes[0]
+            Spinner:
+                id: simpleFucSpinner
+                size_hint: (0.25,1)
+                text: root.ah.tf.getMethods(threshTypeSpinner.text)[0]
+                values: root.ah.tf.getMethods(threshTypeSpinner.text)
+            BoxLayout:
+                size_hint: (0.2,1)
+                orientation: "vertical"
+                Label:
+                    text: 'Otsu'
+                Switch:
+                    id: otsuSwitch
+                    active: False
+                    disabled: threshTypeSpinner.text == root.ah.tf.thresholdTypes[1]
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (1, 0.7)
+            BoxLayout:
+                orientation: "vertical"
+                BoxLayout:
+                    orientation: "horizontal"
+                    Label:
+                        size_hint: (0.2,1)
+                        text: 'BlockSize : '+str(int(blockSizeslider.value))
+                    Slider:
+                        disabled: threshTypeSpinner.text == root.ah.tf.thresholdTypes[0]
+                        id: blockSizeslider
+                        size_hint: (0.8,1)
+                        min: 3
+                        max: 15
+                        value: 3
+                        step: 2
+                        value_track: True
+                BoxLayout:
+                    orientation: "horizontal"
+                    Label:
+                        size_hint: (0.2,1)
+                        text: 'C : '+str(int(Cslider.value))
+                    Slider:
+                        disabled: threshTypeSpinner.text == root.ah.tf.thresholdTypes[0]
+                        id: Cslider
+                        size_hint: (0.8,1)
+                        min: -100
+                        max: 100
+                        value: 0
+                        step: 1
+                        value_track: True
+                BoxLayout:
+                    orientation: "horizontal"
+                    Label:
+                        size_hint: (0.2,1)
+                        text: 'Min : '+str(int(minslider.value))
+                    Slider:
+                        disabled: threshTypeSpinner.text == root.ah.tf.thresholdTypes[1]
+                        id: minslider
+                        size_hint: (0.8,1)
+                        min: 0
+                        max: 255
+                        value: 0
+                        step: 1
+                        value_track: True
+                        on_value: root.ah.do_thresholding(threshTypeSpinner.text, int(minslider.value), int(maxslider.value), simpleFucSpinner.text, None, otsuSwitch.active)
+                BoxLayout:
+                    orientation: "horizontal"
+                    Label:
+                        size_hint: (0.2,1)
+                        text: 'Max : '+str(int(maxslider.value))
+                    Slider:
+                        id: maxslider
+                        size_hint: (0.8,1)
+                        min: 0
+                        max: 255
+                        value: 255
+                        step: 1
+                        value_track: True
+                        on_value: root.ah.do_thresholding(threshTypeSpinner.text, int(minslider.value), int(maxslider.value), simpleFucSpinner.text, adapFucSpinner.text, otsuSwitch.active, int(blockSizeslider.value), int(Cslider.value))
+<SmoothBar>:
+    BoxLayout:
+        orientation: "vertical"
+        Spinner:
+            id: smoothingTypeSpinner
+            size_hint: (1,0.2)
+            text: root.ah.tf.blurTypes[0]
+            values: root.ah.tf.blurTypes
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'sigma Color : '+str(int(sigmaColorSlider.value))
+            Slider:
+                disabled: smoothingTypeSpinner.text != 'BilateralFilter'
+                id: sigmaColorSlider
+                size_hint: (0.8,1)
+                min: 0
+                max: 255
+                value: 0
+                step: 1
+                value_track: True
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'sigma Space : '+str(int(sigmaSpaceSlider.value))
+            Slider:
+                disabled: smoothingTypeSpinner.text != 'BilateralFilter'
+                id: sigmaSpaceSlider
+                size_hint: (0.8,1)
+                min: 0
+                max: 255
+                value: 255
+                step: 1
+                value_track: True
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'kernel Size : '+str(int(SmoothKernelSlider.value))
+            Slider:
+                id: SmoothKernelSlider
+                size_hint: (0.8,1)
+                min: 1
+                max: 15
+                value: 1
+                step: 2
+                value_track: True
+                on_value: root.ah.do_smoothing(smoothingTypeSpinner.text, int(SmoothKernelSlider.value), int(sigmaColorSlider.value), int(sigmaSpaceSlider.value))
+<TransformationsBar>:
+    BoxLayout:
+        orientation: "vertical"
+        Spinner:
+            id: transformTypeSpinner
+            size_hint: (1,0.2)
+            text: root.ah.tf.morpTypes[0]
+            values: root.ah.tf.morpTypes
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'Iterations : '+str(int(transformIterSlider.value))
+            Slider:
+                disabled: transformTypeSpinner.text not in ['Erosion','Dilation']
+                id: transformIterSlider
+                size_hint: (0.8,1)
+                min: 0
+                max: 10
+                value: 0
+                step: 1
+                value_track: True
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'kernel Size : '+str(int(transformKernelSlider.value))
+            Slider:
+                id: transformKernelSlider
+                size_hint: (0.8,1)
+                min: 1
+                max: 15
+                value: 1
+                step: 2
+                value_track: True
+                on_value: root.ah.do_morp(transformTypeSpinner.text, int(transformKernelSlider.value), int(transformIterSlider.value))
+<GradientsBar>:
+    BoxLayout:
+        orientation: "vertical"
+        Spinner:
+            id: gradientTypeSpinner
+            size_hint: (1,0.2)
+            text: root.ah.tf.gradientTypes[0]
+            values: root.ah.tf.gradientTypes
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'kernel Size : '+str(int(gradientKernelSlider.value))
+            Slider:
+                id: gradientKernelSlider
+                size_hint: (0.8,1)
+                min: 1
+                max: 15
+                value: 1
+                step: 2
+                value_track: True
+                on_value: root.ah.do_image_Gradient(gradientTypeSpinner.text, int(gradientKernelSlider.value), cv2.CV_64F)
+<EdgeDetectionBar>:
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'Min : '+str(int(cannyMinSlider.value))
+            Slider:
+                id: cannyMinSlider
+                size_hint: (0.8,1)
+                min: 0
+                max: 255
+                value: 0
+                step: 1
+                value_track: True
+                on_value: root.ah.do_canny_edge_detection(int(cannyMinSlider.value), int(cannyMaxSlider.value))
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'Max : '+str(int(cannyMaxSlider.value))
+            Slider:
+                id: cannyMaxSlider
+                size_hint: (0.8,1)
+                min: 0
+                max: 255
+                value: 255
+                step: 1
+                value_track: True
+                on_value: root.ah.do_canny_edge_detection(int(cannyMinSlider.value), int(cannyMaxSlider.value))
+<HoughTransformBar>:
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Spinner:
+                id: houghTypeSpinner
+                size_hint: (0.5,1)
+                text: root.ah.tf.houghTypes[0]
+                values: root.ah.tf.houghTypes
+            Label:
+                size_hint: (0.2,1)
+                text: 'theta :'
+            Spinner:
+                id: thetaSpinner
+                size_hint: (0.3,1)
+                text: '180'
+                values: ['90','180','270','360']
+                on_text: root.ah.do_hough_line_transform(houghTypeSpinner.text, int(rhoSlider.value), int(thetaSpinner.text), int(houghThresholdSlider.value), int(minLineLengthSlider.value), int(minLineLengthSlider.value))
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'rho : '+str(int(rhoSlider.value))
+            Slider:
+                id: rhoSlider
+                size_hint: (0.8,1)
+                min: 1
+                max: 255
+                value: 1
+                step: 1
+                value_track: True
+                on_value: root.ah.do_hough_line_transform(houghTypeSpinner.text,int(rhoSlider.value), int(thetaSpinner.text), int(houghThresholdSlider.value), int(minLineLengthSlider.value), int(minLineLengthSlider.value))
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'minLineLength : '+str(int(minLineLengthSlider.value))
+            Slider:
+                disabled: houghTypeSpinner.text == root.ah.tf.houghTypes[0]
+                id: minLineLengthSlider
+                size_hint: (0.8,1)
+                min: 0
+                max: 255
+                value: 0
+                step: 1
+                value_track: True
+                on_value: root.ah.do_hough_line_transform(houghTypeSpinner.text,int(rhoSlider.value), int(thetaSpinner.text), int(houghThresholdSlider.value), int(minLineLengthSlider.value), int(minLineLengthSlider.value))
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'maxLineGap : '+str(int(maxLineGapSlider.value))
+            Slider:
+                disabled: houghTypeSpinner.text == root.ah.tf.houghTypes[0]
+                id: maxLineGapSlider
+                size_hint: (0.8,1)
+                min: 0
+                max: 255
+                value: 0
+                step: 1
+                value_track: True
+                on_value: root.ah.do_hough_line_transform(houghTypeSpinner.text,int(rhoSlider.value), int(thetaSpinner.text), int(houghThresholdSlider.value), int(minLineLengthSlider.value), int(minLineLengthSlider.value))
+        BoxLayout:
+            size_hint: (1,0.2)
+            orientation: "horizontal"
+            Label:
+                size_hint: (0.2,1)
+                text: 'Threshold : '+str(int(houghThresholdSlider.value))
+            Slider:
+                id: houghThresholdSlider
+                size_hint: (0.8,1)
+                min: 1
+                max: 255
+                value: 1
+                step: 1
+                value_track: True
+                on_value: root.ah.do_hough_line_transform(houghTypeSpinner.text,int(rhoSlider.value), int(thetaSpinner.text), int(houghThresholdSlider.value), int(minLineLengthSlider.value), int(minLineLengthSlider.value))
+<ActionChangeDialog>:
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: 'This will reset to checkpoint\nbefore the action you want to revert to'
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            orientation: "horizontal"
+            Button:
+                text: "No"
+                on_release: root.cancel()
+            Button:
+                text: "Yes"
+                on_release: root.go()
+<LoadDialog>:
+    BoxLayout:
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+            filters: ['*.jpg']
+            rootpath: os.getenv("HOME")
+            on_submit: root.load(filechooser.path, filechooser.selection)
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
