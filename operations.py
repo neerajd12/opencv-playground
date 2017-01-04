@@ -50,6 +50,20 @@ class operation():
                 self.update_and_reload_image(self.action, '/tmp/visualOpencvtmp_color_space'+'.jpg', img)
             except Exception as e:
                 self.show_error(e)
+    def do_normalization(self, type, alpha, beta):
+        img = self.load_for_processing(self.lastAction)
+        try:
+            if type == self.tf.normType[0]:
+                img = cv2.normalize(img, img, alpha, beta, cv2.NORM_INF)
+            elif type == self.tf.normType[1]:
+                img = cv2.normalize(img, img, alpha, beta, cv2.NORM_L1)
+            elif type == self.tf.normType[2]:
+                img = cv2.normalize(img, img, alpha, beta, cv2.NORM_L2)
+            elif type == self.tf.normType[3]:
+                img = cv2.normalize(img, img, alpha, beta, cv2.NORM_MINMAX)
+            self.update_and_reload_image(self.action, '/tmp/visualOpencvtmp_norm'+'.jpg', img)
+        except Exception as e:
+            self.show_error(e)
 
     def do_smoothing(self, type, ksize, sigmaColor, sigmaSpace):
         img = self.load_for_processing(self.lastAction)

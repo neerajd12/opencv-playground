@@ -20,6 +20,8 @@ class LoadDialog(BoxLayout):
     cancel = ObjectProperty(None)
 class ColorSpaceBar(BoxLayout):
     ah = ObjectProperty(None)
+class NormalizationBar(BoxLayout):
+    ah = ObjectProperty(None)
 class SmoothBar(BoxLayout):
     ah = ObjectProperty(None)
 class ThreasholdingBar(BoxLayout):
@@ -35,22 +37,24 @@ class HoughTransformBar(BoxLayout):
 
 class Root(BoxLayout):
     ah = operation()
-    widgetsBarList = ["Change ColorSpace","Blur","Threashold","Transform","Gradient","Edge Detection","Hough Transform"]
+    widgetsBarList = ["Change ColorSpace","Normalize","Blur","Threashold","Transform","Gradient","Edge Detection","Hough Transform"]
 
     def get_action_bar_class(self, bar):
         if bar == self.widgetsBarList[0]:
             return ColorSpaceBar(ah = self.ah)
         elif bar == self.widgetsBarList[1]:
-            return SmoothBar(ah = self.ah)
+            return NormalizationBar(ah = self.ah)
         elif bar == self.widgetsBarList[2]:
-            return ThreasholdingBar(ah = self.ah)
+            return SmoothBar(ah = self.ah)
         elif bar == self.widgetsBarList[3]:
-            return TransformationsBar(ah = self.ah)
+            return ThreasholdingBar(ah = self.ah)
         elif bar == self.widgetsBarList[4]:
-            return GradientsBar(ah = self.ah)
+            return TransformationsBar(ah = self.ah)
         elif bar == self.widgetsBarList[5]:
-            return EdgeDetectionBar(ah = self.ah)
+            return GradientsBar(ah = self.ah)
         elif bar == self.widgetsBarList[6]:
+            return EdgeDetectionBar(ah = self.ah)
+        elif bar == self.widgetsBarList[7]:
             return HoughTransformBar(ah = self.ah)
 
     def show_action_bar(self, bar):
@@ -75,7 +79,7 @@ class Root(BoxLayout):
         self.ids['mainImg'].source = filename[0]
         self.ids['actionBar'].clear_widgets()
         self.ids['actionBar'].add_widget(Label(text='Choose actions', font_size=30, color=(1,0.5,0.5,1)))
-        self.ids['actionsLabel'].text = self.ids['actionsLabel'].text+"load"
+        self.ids['actionsLabel'].text = "Actions Done: load"
         self.ah.imgView = self.ids['mainImg']
         self.dismiss_popup()
 
@@ -89,6 +93,7 @@ Factory.register('Root', cls=Root)
 Factory.register('LoadDialog', cls=LoadDialog)
 Factory.register('ActionChangeDialog', cls=ActionChangeDialog)
 Factory.register('ColorSpaceBar', cls=ColorSpaceBar)
+Factory.register('NormalizationBar', cls=NormalizationBar)
 Factory.register('SmoothBar', cls=SmoothBar)
 Factory.register('ThreasholdingBar', cls=ThreasholdingBar)
 Factory.register('TransformationsBar', cls=TransformationsBar)

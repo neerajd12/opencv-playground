@@ -10,6 +10,7 @@ class cvTypes():
     blurTypes=['Convolution','Blur','BoxFilter','GaussianBlur','MedianBlur','BilateralFilter']
     morpTypes=['Erosion','Dilation','Opening','Closing','Morphological Gradient','Top Hat','Black Hat']
     gradientTypes=['Sobel','Laplacian']
+    normType = ['NORM_INF','NORM_L1','NORM_L2','NORM_MINMAX']
     houghTypes=['Simple','Probabilistic']
     colorCodes=['RGB','RGBA','BGR','BGRA','GRAY','HSV','HLS']
 

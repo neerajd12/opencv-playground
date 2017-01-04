@@ -38,7 +38,10 @@ Root:
             on_release: root.show_action_bar(root.widgetsBarList[5])
         Button:
             text: root.widgetsBarList[6]
-            on_release: root.show_action_bar(root.widgetsBarList[6])     
+            on_release: root.show_action_bar(root.widgetsBarList[6])
+        Button:
+            text: root.widgetsBarList[7]
+            on_release: root.show_action_bar(root.widgetsBarList[6])
     BoxLayout:
         size_hint: (.8, 1)
         orientation: "vertical"
@@ -173,6 +176,47 @@ Root:
                         step: 1
                         value_track: True
                         on_value: root.ah.do_thresholding(threshTypeSpinner.text, int(minslider.value), int(maxslider.value), simpleFucSpinner.text, adapFucSpinner.text, otsuSwitch.active, int(blockSizeslider.value), int(Cslider.value))
+<NormalizationBar>:
+    BoxLayout:
+        orientation: "vertical"
+        Spinner:
+            id: normTypeSpinner
+            size_hint: (1, 0.3)
+            text: root.ah.tf.normType[0]
+            values: root.ah.tf.normType
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (1, 0.7)
+            BoxLayout:
+                orientation: "vertical"
+                BoxLayout:
+                    orientation: "horizontal"
+                    Label:
+                        size_hint: (0.2,1)
+                        text: 'Alpha : '+str(int(normAlphaSlider.value))
+                    Slider:
+                        id: normAlphaSlider
+                        size_hint: (0.8,1)
+                        min: 0
+                        max: 255
+                        value: 0
+                        step: 1
+                        value_track: True
+                        on_value: root.ah.do_normalization(normTypeSpinner.text, int(normAlphaSlider.value), int(normBetaSlider.value))
+                BoxLayout:
+                    orientation: "horizontal"
+                    Label:
+                        size_hint: (0.2,1)
+                        text: 'Beta : '+str(int(normBetaSlider.value))
+                    Slider:
+                        id: normBetaSlider
+                        size_hint: (0.8,1)
+                        min: 0
+                        max: 255
+                        value: 255
+                        step: 1
+                        value_track: True
+                        on_value: root.ah.do_normalization(normTypeSpinner.text, int(normAlphaSlider.value), int(normBetaSlider.value))
 <SmoothBar>:
     BoxLayout:
         orientation: "vertical"
