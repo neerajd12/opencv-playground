@@ -86,22 +86,43 @@ Root:
         BoxLayout:
             orientation: "horizontal"
             size_hint: (1, 0.3)
-            Spinner:
-                id: threshTypeSpinner
+            BoxLayout:
                 size_hint: (0.15,1)
-                text: root.ah.tf.thresholdTypes[0]
-                values: root.ah.tf.thresholdTypes
-            Spinner:
-                id: adapFucSpinner
-                size_hint: (0.4,1)
-                text: root.ah.tf.adaptiveThresholdMethods.keys()[0]
-                values: root.ah.tf.adaptiveThresholdMethods.keys()
-                disabled: threshTypeSpinner.text == root.ah.tf.thresholdTypes[0]
-            Spinner:
-                id: simpleFucSpinner
+                orientation: "vertical"
+                Label:
+                    text: 'Channel'
+                Spinner:
+                    id: threshChannelSpinner
+                    text: root.ah.tf.thresholdChannels[0]
+                    values: root.ah.tf.thresholdChannels
+            BoxLayout:
+                size_hint: (0.15,1)
+                orientation: "vertical"
+                Label:
+                    text: 'Type'
+                Spinner:
+                    id: threshTypeSpinner
+                    text: root.ah.tf.thresholdTypes[0]
+                    values: root.ah.tf.thresholdTypes
+            BoxLayout:
                 size_hint: (0.25,1)
-                text: root.ah.tf.getMethods(threshTypeSpinner.text)[0]
-                values: root.ah.tf.getMethods(threshTypeSpinner.text)
+                orientation: "vertical"
+                Label:
+                    text: 'Function'
+                Spinner:
+                    id: simpleFucSpinner
+                    text: root.ah.tf.getMethods(threshTypeSpinner.text)[0]
+                    values: root.ah.tf.getMethods(threshTypeSpinner.text)
+            BoxLayout:
+                size_hint: (0.25,1)
+                orientation: "vertical"
+                Label:
+                    text: 'Adaptive Function'                    
+                Spinner:
+                    id: adapFucSpinner
+                    text: root.ah.tf.adaptiveThresholdMethods.keys()[0]
+                    values: root.ah.tf.adaptiveThresholdMethods.keys()
+                    disabled: threshTypeSpinner.text == root.ah.tf.thresholdTypes[0]
             BoxLayout:
                 size_hint: (0.2,1)
                 orientation: "vertical"
@@ -267,11 +288,25 @@ Root:
 <GradientsBar>:
     BoxLayout:
         orientation: "vertical"
-        Spinner:
-            id: gradientTypeSpinner
+        BoxLayout:
+            orientation: "horizontal"
             size_hint: (1,0.2)
-            text: root.ah.tf.gradientTypes[0]
-            values: root.ah.tf.gradientTypes
+            Label:
+                size_hint: (0.2,1)
+                text: 'Type : '
+            Spinner:
+                id: gradientTypeSpinner
+                size_hint: (0.3,1)
+                text: root.ah.tf.gradientTypes[0]
+                values: root.ah.tf.gradientTypes
+            Label:
+                size_hint: (0.2,1)
+                text: 'Orientation : '
+            Spinner:
+                id: gradientDirectionSpinner
+                size_hint: (0.3,1)
+                text: root.ah.tf.gradientDirection[0]
+                values: root.ah.tf.gradientDirection
         BoxLayout:
             size_hint: (1,0.2)
             orientation: "horizontal"
@@ -286,7 +321,7 @@ Root:
                 value: 1
                 step: 2
                 value_track: True
-                on_value: root.ah.do_image_Gradient(gradientTypeSpinner.text, int(gradientKernelSlider.value), cv2.CV_64F)
+                on_value: root.ah.do_image_Gradient(gradientTypeSpinner.text, int(gradientKernelSlider.value), cv2.CV_64F, gradientDirectionSpinner.text)
 <EdgeDetectionBar>:
     BoxLayout:
         orientation: "vertical"

@@ -71,9 +71,15 @@ class operation():
         except Exception as e:
             self.show_error(e)
 
-    def do_thresholding(self, thresholdType, min, max, simpleFunc, adaptiveFunc, withOtsu=False, blockSize=3, C=0):
+    def do_thresholding(self, thresholdType, min, max, simpleFunc, adaptiveFunc, channel='All', withOtsu=False, blockSize=3, C=0):
         img = self.load_for_processing(self.lastAction)
         try:
+            if channel == '0':
+                img=img[:,:,0]
+            elif channel == '1':
+                img=img[:,:,1]
+            elif channel == '2':
+                img=img[:,:,2]
             if thresholdType == self.tf.thresholdTypes[0]:
                 if withOtsu:
                     ret,img = cv2.threshold(img,min,max,self.tf.simpleThresholdMethods[simpleFunc]+cv2.THRESH_OTSU)
@@ -107,12 +113,17 @@ class operation():
         except Exception as e:
             self.show_error(e)
 
-    def do_image_Gradient(self, type, size, output_datatype):
+    def do_image_Gradient(self, type, size, output_datatype, orient='x'):
         img = self.load_for_processing(self.lastAction)
         try:
             if type == self.tf.gradientTypes[0]:
-                img = cv2.Sobel(img,output_datatype,1,0,ksize=size)
-                img = cv2.Sobel(img,output_datatype,0,1,ksize=size)
+                if orient == 'x':
+                    img = cv2.Sobel(img,output_datatype,1,0,ksize=size)
+                elif orient == 'y':
+                    img = cv2.Sobel(img,output_datatype,0,1,ksize=size)
+                else:
+                    img = cv2.Sobel(img,output_datatype,1,0,ksize=size)
+                    img = cv2.Sobel(img,output_datatype,0,1,ksize=size)
             elif type == self.tf.gradientTypes[1]:
                 img = cv2.Laplacian(img,output_datatype)
             self.update_and_reload_image(self.action, '/tmp/visualOpencvtmp_grad'+'.jpg', img)    

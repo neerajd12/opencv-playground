@@ -7,9 +7,11 @@ class cvTypes():
         pass
         
     thresholdTypes=['Simple', 'Adaptive']
+    thresholdChannels=['All','0','1','2']
     blurTypes=['Convolution','Blur','BoxFilter','GaussianBlur','MedianBlur','BilateralFilter']
     morpTypes=['Erosion','Dilation','Opening','Closing','Morphological Gradient','Top Hat','Black Hat']
     gradientTypes=['Sobel','Laplacian']
+    gradientDirection=['x','y', 'Both']
     houghTypes=['Simple','Probabilistic']
     colorCodes=['RGB','RGBA','BGR','BGRA','GRAY','HSV','HLS']
 
