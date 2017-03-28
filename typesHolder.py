@@ -12,6 +12,7 @@ class cvTypes():
     morpTypes=['Erosion','Dilation','Opening','Closing','Morphological Gradient','Top Hat','Black Hat']
     gradientTypes=['Sobel','Laplacian']
     gradientDirection=['x','y', 'Both']
+    normType = ['NORM_INF','NORM_L1','NORM_L2','NORM_MINMAX']
     houghTypes=['Simple','Probabilistic']
     colorCodes=['RGB','RGBA','BGR','BGRA','GRAY','HSV','HLS']
 
